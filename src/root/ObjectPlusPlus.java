@@ -1,4 +1,4 @@
-import root.ObjectPlus;
+package root;
 
 import java.io.PrintStream;
 import java.io.Serializable;
@@ -30,6 +30,7 @@ public class ObjectPlusPlus extends ObjectPlus  implements Serializable {
             HashMap<Object, ObjectPlusPlus> powiazaniaObiektu = powiazania.get(rola);
             return !powiazaniaObiektu.isEmpty();
         }
+        return false;
     }
 
     //SUBSET

@@ -52,9 +52,6 @@ public class KsiazeczkaWojskowa extends ObjectPlus {
 
     @Override
     public String toString() {
-        ToStringType zolTyp = this.zolnierz.changeToStringType(ToStringType.SIMPLE);
-        String zolMsg = this.zolnierz.toString();
-        this.zolnierz.changeToStringType(zolTyp);
-        return "Ksiazeczka Wojskowa nr. "+ this.numerSeryjny + " nal. do "+ zolMsg;
+        return "Ksiazeczka Wojskowa nr. "+ this.numerSeryjny + " nal. do "+ this.zolnierz.getSimpleName();
     }
 }

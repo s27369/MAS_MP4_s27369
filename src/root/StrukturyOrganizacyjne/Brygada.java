@@ -28,14 +28,10 @@ public class Brygada extends StrukturaOrganizacyjna {
         if(batalion==null)
             throw new IllegalArgumentException("batalion nie może być null");
         if(this.bataliony.contains(batalion)){
-            ToStringType typeBryg = this.changeToStringType(ToStringType.SIMPLE);
-            ToStringType typeBat = batalion.changeToStringType(ToStringType.SIMPLE);
-            System.out.println(this+ " ma już przypisany batalion "+batalion);
-            this.changeToStringType(typeBryg);
-            batalion.changeToStringType(typeBat);
+            System.out.println(this.getSimpleName()+ " ma już przypisany batalion "+batalion.getSimpleName());
             return ;
         }
-        if(this.bataliony.size()==3){
+        if(this.bataliony.size()==3){ //Wlasne
             System.out.println("Brygada ma już maksymalną liczbę batalionów");
             return;
         }
@@ -48,20 +44,13 @@ public class Brygada extends StrukturaOrganizacyjna {
             throw new IllegalArgumentException("batalion nie może być null");
         }
 
-        ToStringType typeBat = batalion.changeToStringType(ToStringType.SIMPLE);
-        ToStringType typeBryg = this.changeToStringType(ToStringType.SIMPLE);
-
         if(this.bataliony.contains(batalion)){
-            System.out.println("Usuwam batalion "+ batalion+ " z "+this);
-            this.changeToStringType(typeBryg);
-            batalion.changeToStringType(typeBat);
+            System.out.println("Usuwam batalion "+ batalion.getSimpleName()+ " z "+this.getSimpleName());
 
             this.bataliony.remove(batalion);
             batalion.removeBrygadaMacierzysta();
         }else{
-            System.out.println("Brygada "+this+" nie ma przypisanego batalionu "+batalion);
-            this.changeToStringType(typeBryg);
-            batalion.changeToStringType(typeBat);
+            System.out.println("Brygada "+this.getSimpleName()+" nie ma przypisanego batalionu "+batalion.getSimpleName());
         }
     }
     public List<Batalion> getBataliony() {
@@ -145,9 +134,7 @@ public class Brygada extends StrukturaOrganizacyjna {
                     if(i==bataliony.size()-1){
                         end="]";
                     }
-                    ToStringType type = b.changeToStringType(ToStringType.SIMPLE);
-                    batalionyMsg+=b.toString()+end;
-                    b.changeToStringType(type);
+                    batalionyMsg+=b.getSimpleName()+end;
                     i++;
                 }
             }

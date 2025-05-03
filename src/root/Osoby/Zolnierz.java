@@ -16,8 +16,8 @@ public class Zolnierz extends Osoba {
     private List<Kontrakt> kontraktList = new ArrayList<>();
     private KsiazeczkaWojskowa ksiazeczkaWojskowa;
 
-    public Zolnierz(String imie, String nazwisko, String stopien, String nrKsiazeczkiWojskowej) {
-        super(imie, nazwisko);
+    public Zolnierz(String imie, String nazwisko, String pesel, String stopien, String nrKsiazeczkiWojskowej) {
+        super(imie, nazwisko, pesel);
         try {
             setStopien(stopien);
             this.ksiazeczkaWojskowa = new KsiazeczkaWojskowa(nrKsiazeczkiWojskowej, this);
@@ -32,6 +32,7 @@ public class Zolnierz extends Osoba {
     @Override
     public void removeFromExtent() {
         if(this.ksiazeczkaWojskowa!=null) this.ksiazeczkaWojskowa.removeFromExtent();
+        while(kontraktList.size()>0) kontraktList.get(0).removeFromExtent();
         super.removeFromExtent();
     }
 

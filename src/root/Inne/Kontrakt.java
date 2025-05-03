@@ -81,12 +81,8 @@ public class Kontrakt extends ObjectPlus {
 
     @Override
     public String toString() {
-        ToStringType typB = this.brygada.changeToStringType(ToStringType.SIMPLE);
-        String brygadaStr = this.brygada.toString();
-        ToStringType typZ = this.zolnierz.changeToStringType(ToStringType.SIMPLE);
-        String zolnierzStr = this.zolnierz.toString();
-        this.brygada.changeToStringType(typB);
-        this.zolnierz.changeToStringType(typZ);
+        String brygadaStr = this.brygada.getSimpleName();
+        String zolnierzStr = this.zolnierz.getSimpleName();
         return "Kontrakt między " + zolnierzStr + " a " +brygadaStr + " na okres [" + this.startDate + " do " + this.endDate+ "]";
     }
 }

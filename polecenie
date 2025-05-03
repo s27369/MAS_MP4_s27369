@@ -1,16 +1,14 @@
-Ograniczenia:
+Atrybutu: Osoba.Imie musi byc alphanumeric
 
-Atrybutu:
+Unique: Osoba.Pesel musi byc unique
 
-Unique:
-
-Subset:
+Subset: Sztab.dowodztwo jest subsetem Sztab.czlonkowie
 
 Ordered:
 
-Bag:
+Bag: Zolnierz 1-* kontrakt *-1 brygada
 
-Xor:
+Xor: Batalion może być albo typu zwykły i podlegać pod brygadę albo typ SAMODZIELNY i podlegać pod sztab
 
-Ograniczenie Własne:
+Ograniczenie Własne: Brygada.bataliony size <= 3
 

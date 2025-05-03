@@ -38,7 +38,17 @@ public class ObjectPlus implements Serializable {
 /*    public static <T> void printExtent(Class<T> cls){
         System.out.println(getExtentFromClass(cls));
     }*/
-    public static void printExtent(){
-        System.out.println(extent);
+public static void printExtent() {
+    System.out.println("=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-EXTENT=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-");
+    for (Map.Entry<Class, List> entry : extent.entrySet()) {
+        Class<?> clazz = entry.getKey();
+        List<?> list = entry.getValue();
+
+        System.out.println("Class: " + clazz.getSimpleName());
+        for (Object obj : list) {
+            System.out.println("  -> " + obj);
+        }
     }
+    System.out.println("=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-");
+}
 }
