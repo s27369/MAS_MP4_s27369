@@ -16,7 +16,7 @@ public class Osoba extends ObjectPlus {
             setNazwisko(nazwisko);
             setPESEL(PESEL);
         } catch (Exception e) {
-            e.printStackTrace();
+            System.out.println(e.getMessage());
             removeFromExtent();
         }
     }
@@ -29,9 +29,11 @@ public class Osoba extends ObjectPlus {
     }
 
     public void removeSztab(){
-        Sztab s = this.sztab;
-        this.sztab=null;
-        s.removeCzlonek(this);
+        if(this.sztab!=null){
+            Sztab s = this.sztab;
+            this.sztab=null;
+            s.removeCzlonek(this);
+        }
     }
 
     public String getImie() {
@@ -79,6 +81,14 @@ public class Osoba extends ObjectPlus {
 
     @Override
     public String toString() {
-        return imie+" "+nazwisko;
+        if(this.toStringType==ToStringType.SIMPLE) return imie+" "+nazwisko;
+        else{
+            return "Osoba{" +
+                    "imie='" + imie + '\'' +
+                    ", nazwisko='" + nazwisko + '\'' +
+                    ", PESEL='" + PESEL + '\'' +
+                    ", sztab=" + (sztab==null?"brak":sztab.getSimpleName())+
+                    '}';
+        }
     }
 }

@@ -49,7 +49,8 @@ public class Sztab extends ObjectPlus {
     public void addCzlonek(Osoba czlonek) {
         if(czlonek==null) throw new IllegalArgumentException("Czlonek nie moze byc null");
         if(czlonkowie.contains(czlonek)) return;
-        this.czlonkowie = czlonkowie;
+        this.czlonkowie.add(czlonek);
+        czlonek.setSztab(this);
     }
 
     public void addPodlegajacaJednostka(StrukturaOrganizacyjna jednostka) {
@@ -77,7 +78,10 @@ public class Sztab extends ObjectPlus {
     public void removeCzlonek(Osoba czlonek){
         if(czlonek==null) throw new IllegalArgumentException("czlonek nie moze byc null");
         if(dowodztwo.containsKey(czlonek)) czlonkowie.remove(czlonek);//SUBSET
-        if(czlonkowie.contains(czlonek)) czlonkowie.remove(czlonek);
+        if(czlonkowie.contains(czlonek)) {
+            czlonkowie.remove(czlonek);
+            czlonek.removeSztab();
+        }
     }
 
     public List<Osoba> getCzlonkowie() {return Collections.unmodifiableList(czlonkowie);}
@@ -99,7 +103,7 @@ public class Sztab extends ObjectPlus {
         for (int i = 0; i < this.czlonkowie.size()-1; i++) {
             result+=this.czlonkowie.get(i).getSimpleName()+sep;
         }
-        return result + this.czlonkowie.get(this.czlonkowie.size()-1) + "]";
+        return result + this.czlonkowie.get(this.czlonkowie.size()-1).getSimpleName() + "]";
     }
 
     private String dowodztwoToString(){
@@ -109,7 +113,7 @@ public class Sztab extends ObjectPlus {
         for (Map.Entry<Osoba, String> pair:getDowodztwo().entrySet()) {
             result+=pair.getKey().getSimpleName()+": "+pair.getValue()+sep;
         }
-        result = result.substring(0, result.length()-1);
+        result = result.substring(0, result.length()-2);
         return result + "]";
     }
 

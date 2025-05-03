@@ -2,10 +2,12 @@ package root.StrukturyOrganizacyjne;
 
 import root.Inne.Adres;
 //import root.Inne.Pojazd;
+import root.Osoby.Zolnierz;
 import root.ToStringType;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.TreeSet;
 
 public class Batalion extends StrukturaOrganizacyjna {
     //każdy batalion ma swoją jednostkę.

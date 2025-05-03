@@ -41,11 +41,12 @@ public class Brygada extends StrukturaOrganizacyjna {
         }
         while(bataliony.size()>0){
             bataliony.get(0).removeBrygadaMacierzysta();
-            bataliony.remove(0);
+//            bataliony.remove(0);
         }
         while(kontraktList.size()>0){
-            kontraktList.get(0).removeFromExtent();
-            removeKontrakt(kontraktList.get(0));
+            Kontrakt k = kontraktList.get(0);
+            removeKontrakt(k);
+            k.removeFromExtent();
         }
 
         super.removeFromExtent();

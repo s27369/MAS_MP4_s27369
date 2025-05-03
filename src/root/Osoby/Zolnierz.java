@@ -1,26 +1,25 @@
 package root.Osoby;
 
 import root.Inne.Kontrakt;
-import root.Inne.KsiazeczkaWojskowa;
-import root.StrukturyOrganizacyjne.Batalion;
 import root.StrukturyOrganizacyjne.Brygada;
 import root.ToStringType;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 public class Zolnierz extends Osoba {
-    //kompozycja: zolnierz ma ksiazeczke wojskowa
+    private static final List<String> STOPNIE = List.of("szeregowy", "kapral", "pułkownik");
+
+    private static TreeSet<Zolnierz> hierarchia = new TreeSet<>(
+            Comparator.comparingInt(z -> STOPNIE.size()-STOPNIE.indexOf(z.getStopien().toLowerCase()))
+    );
     private String stopien;
     private List<Kontrakt> kontraktList = new ArrayList<>();
-    private KsiazeczkaWojskowa ksiazeczkaWojskowa;
 
-    public Zolnierz(String imie, String nazwisko, String pesel, String stopien, String nrKsiazeczkiWojskowej) {
+
+    public Zolnierz(String imie, String nazwisko, String pesel, String stopien) {
         super(imie, nazwisko, pesel);
         try {
             setStopien(stopien);
-            this.ksiazeczkaWojskowa = new KsiazeczkaWojskowa(nrKsiazeczkiWojskowej, this);
         } catch (Exception e) {
             e.printStackTrace();
             removeFromExtent();
@@ -31,18 +30,8 @@ public class Zolnierz extends Osoba {
 
     @Override
     public void removeFromExtent() {
-        if(this.ksiazeczkaWojskowa!=null) this.ksiazeczkaWojskowa.removeFromExtent();
         while(kontraktList.size()>0) kontraktList.get(0).removeFromExtent();
         super.removeFromExtent();
-    }
-
-    public void removeKsiazeczkaWojskowa(){
-        if(this.ksiazeczkaWojskowa!=null){
-            KsiazeczkaWojskowa k = this.ksiazeczkaWojskowa;
-            this.ksiazeczkaWojskowa = null;
-            k.removeFromExtent();
-        }
-
     }
 
     //-------------------------------------------------BRYGADA----------------------------------------------------------------
@@ -88,13 +77,32 @@ public class Zolnierz extends Osoba {
         if(stopien==null || stopien.isBlank()){
             throw new IllegalArgumentException("stopien nie może być null ani pusty");
         }
+        if(!STOPNIE.contains(stopien.toLowerCase())) throw new IllegalArgumentException("na potrzeby zadania dostępne stopnie to szeregowy, kapral, pułkownik");
         this.stopien = stopien;
+    }
+
+    public static Set<Zolnierz> getHierarchia(){
+        return Collections.unmodifiableSet(hierarchia);
+    }
+    public static void addToHierarchia(Zolnierz z){
+        hierarchia.add(z);
+    }
+
+
+//-----------------------------------------------------------------------------------------------------------------
+
+    public String getSimpleName(){
+        ToStringType oldType = this.toStringType;
+        this.toStringType=ToStringType.SIMPLE;
+        String msg = this.toString();
+        this.toStringType = oldType;
+        return msg;
     }
 
     @Override
     public String toString() {
         if(this.toStringType == ToStringType.SIMPLE)
-            return stopien+" "+super.toString();
+            return stopien+" "+getImie()+" "+getNazwisko();
         String kontraktyMsg="[";
         if(this.kontraktList.isEmpty()) {
             kontraktyMsg = "brak";
@@ -109,9 +117,8 @@ public class Zolnierz extends Osoba {
                 i++;
             }
         }
-        return "Zolnierz{" +
+        return "Zolnierz{" + super.toString() +", " +
                 "stopien='" + stopien + '\'' +
-                ", ksiazeczkaWojskowa='" + ksiazeczkaWojskowa + '\'' +
                 ", kontrakty=" + kontraktyMsg +
                 '}';
     }
