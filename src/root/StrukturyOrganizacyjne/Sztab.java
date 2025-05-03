@@ -1,26 +1,49 @@
 package root.StrukturyOrganizacyjne;
 
+import root.ObjectPlus;
 import root.Osoby.Osoba;
 import root.ToStringType;
 
 import java.util.*;
 
-public class Sztab {
+public class Sztab extends ObjectPlus {
     String nazwa;
     ToStringType toStringType = ToStringType.DETAILED;
     List<Osoba> czlonkowie = new ArrayList<>();
-    Map<String, Osoba> dowodztwo = new HashMap<>(); //SUBSET czlonkowie //rola: osoba
+    Map<Osoba, String> dowodztwo = new HashMap<>(); //SUBSET czlonkowie //rola: osoba
     List<StrukturaOrganizacyjna> podlegajaceJednostki = new ArrayList<>();
 
     public Sztab(String nazwa) {
-        setNazwa(nazwa);
+        super();
+        try {
+            setNazwa(nazwa);
+        }catch (Exception e){
+            e.printStackTrace();
+            removeFromExtent();
+        }
+    }
+
+    @Override
+    public void removeFromExtent() {
+        while(czlonkowie.size()>0){
+            Osoba czlonek = czlonkowie.get(0);
+            removeCzlonek(czlonek);
+            czlonek.removeSztab();
+        }
+        while(this.podlegajaceJednostki.size()>0){
+            StrukturaOrganizacyjna so = podlegajaceJednostki.get(0);
+            removePodlegajacaJednostka(so);
+            if(so instanceof Batalion) so.removeFromExtent();
+            if(so instanceof Brygada) ((Brygada) so).removeSztab();
+        }
+        super.removeFromExtent();
     }
 
     public void addDowodztwo(Osoba osoba, String rola){
         if(osoba==null) throw new IllegalArgumentException("osoba nie moze byc null");
         if(!czlonkowie.contains(osoba)) throw new IllegalArgumentException("Dowództwo musi być subsetem członków");
         if(dowodztwo.containsValue(osoba))return;
-        this.dowodztwo.put(rola, osoba);
+        this.dowodztwo.put(osoba, rola);
     }
 
     public void addCzlonek(Osoba czlonek) {
@@ -43,9 +66,23 @@ public class Sztab {
         this.nazwa = nazwa;
     }
 
+    public void removePodlegajacaJednostka(StrukturaOrganizacyjna strukturaOrganizacyjna){
+        if(strukturaOrganizacyjna==null) throw new IllegalArgumentException("strukturaOrganizacyjna nie moze byc null");
+        if(podlegajaceJednostki.contains(strukturaOrganizacyjna)) {podlegajaceJednostki.remove(strukturaOrganizacyjna);}
+    }
+    public void removeDowodztwo(Osoba czlonekDowodztwa){
+        if(czlonekDowodztwa==null) throw new IllegalArgumentException("czlonekDowodztwa nie moze byc null");
+        if(dowodztwo.containsKey(czlonekDowodztwa)) dowodztwo.remove(dowodztwo.remove(czlonekDowodztwa));
+    }
+    public void removeCzlonek(Osoba czlonek){
+        if(czlonek==null) throw new IllegalArgumentException("czlonek nie moze byc null");
+        if(dowodztwo.containsKey(czlonek)) czlonkowie.remove(czlonek);//SUBSET
+        if(czlonkowie.contains(czlonek)) czlonkowie.remove(czlonek);
+    }
+
     public List<Osoba> getCzlonkowie() {return Collections.unmodifiableList(czlonkowie);}
     public List<StrukturaOrganizacyjna> getPodlegajaceJednostki() {return Collections.unmodifiableList(podlegajaceJednostki);}
-    public Map<String, Osoba> getDowodztwo() {return Collections.unmodifiableMap(dowodztwo);}
+    public Map<Osoba, String> getDowodztwo() {return Collections.unmodifiableMap(dowodztwo);}
     public String getNazwa() {return nazwa;}
     public String getSimpleName(){
         ToStringType oldType = this.toStringType;
@@ -69,8 +106,8 @@ public class Sztab {
         if(this.dowodztwo.size()==0) return "brak";
         String result = "[";
         String sep = ", ";
-        for (Map.Entry<String, Osoba> pair:getDowodztwo().entrySet()) {
-            result+=pair.getKey()+": "+pair.getValue().getSimpleName()+sep;
+        for (Map.Entry<Osoba, String> pair:getDowodztwo().entrySet()) {
+            result+=pair.getKey().getSimpleName()+": "+pair.getValue()+sep;
         }
         result = result.substring(0, result.length()-1);
         return result + "]";
@@ -80,11 +117,14 @@ public class Sztab {
         if(this.podlegajaceJednostki.size()==0) return "brak";
         String result = "[";
         String sep = ", ";
-        for (int i = 0; i < this.podlegajaceJednostki.size()-1; i++) {
+        for (int i = 0; i < this.podlegajaceJednostki.size(); i++) {
             result+=this.podlegajaceJednostki.get(i).getSimpleName()+sep;
         }
+        result = result.substring(0, result.length()-2);
         return result + "]";
     }
+
+
 
     @Override
     public String toString() {

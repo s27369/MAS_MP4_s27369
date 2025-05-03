@@ -14,16 +14,44 @@ public class Brygada extends StrukturaOrganizacyjna {
 
     //asocjacja zwykla: brygada 1-*batalion
     //asocjacja kwalifikowana: brygada 1-* kontrakt *-1 zolnierz
+    //brygada podlega pod sztab
     private String typ, miasto;
     private List<Batalion> bataliony = new ArrayList<>();
     private List<Kontrakt> kontraktList = new ArrayList<>();
 
+    private Sztab sztab;
+
     public Brygada(int numer, String typ, String miasto) {
         super(numer);
-        setTyp(typ);
-        setMiasto(miasto);
+        try{
+            setTyp(typ);
+            setMiasto(miasto);
+        }catch (Exception e){
+            e.printStackTrace();
+            removeFromExtent();
+        }
+
     }
-//-------------------------------------------------BATALION----------------------------------------------------------------
+
+    @Override
+    public void removeFromExtent() {
+        if(sztab!=null){
+            this.sztab.removePodlegajacaJednostka(this);
+            this.sztab = null;
+        }
+        while(bataliony.size()>0){
+            bataliony.get(0).removeBrygadaMacierzysta();
+            bataliony.remove(0);
+        }
+        while(kontraktList.size()>0){
+            kontraktList.get(0).removeFromExtent();
+            removeKontrakt(kontraktList.get(0));
+        }
+
+        super.removeFromExtent();
+    }
+
+    //-------------------------------------------------BATALION----------------------------------------------------------------
     public void addBatalion(Batalion batalion){
         if(batalion==null)
             throw new IllegalArgumentException("batalion nie może być null");
@@ -36,7 +64,6 @@ public class Brygada extends StrukturaOrganizacyjna {
             return;
         }
         this.bataliony.add(batalion);
-        batalion.setBrygadaMacierzysta(this);
     }
 
     public void removeBatalion(Batalion batalion){
@@ -118,7 +145,21 @@ public class Brygada extends StrukturaOrganizacyjna {
         this.typ = typ;
     }
 
-//-----------------------------------------------------------------------------------------------------------------
+    public Sztab getSztab() {return sztab;}
+
+    public void setSztab(Sztab sztab) {
+        if(sztab==null) throw new IllegalArgumentException("sztab nie może być null");
+        this.sztab = sztab;
+        sztab.addPodlegajacaJednostka(this);
+    }
+
+    public void removeSztab(){
+        Sztab s = this.sztab;
+        this.sztab=null;
+        s.removePodlegajacaJednostka(this);
+    }
+
+    //-----------------------------------------------------------------------------------------------------------------
     @Override
     public String toString() {
         if(this.toStringType== ToStringType.SIMPLE){
@@ -142,6 +183,7 @@ public class Brygada extends StrukturaOrganizacyjna {
                     "numer=" + numer +
                     ", typ='" + typ + '\'' +
                     ", miasto='" + miasto + '\'' +
+                    ", sztab="+(sztab==null?"brak":sztab.getSimpleName()) +
                     ", bataliony=" + batalionyMsg +
                     ", liczbaKontraktow=" + getKontraktAmount() +
                     '}';

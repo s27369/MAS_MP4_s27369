@@ -1,10 +1,12 @@
 package root.Osoby;
 
 import root.ObjectPlus;
+import root.StrukturyOrganizacyjne.Sztab;
 import root.ToStringType;
 
 public class Osoba extends ObjectPlus {
     private String imie, nazwisko, PESEL;
+    private Sztab sztab;
 
     protected ToStringType toStringType = ToStringType.DETAILED;
 
@@ -17,6 +19,19 @@ public class Osoba extends ObjectPlus {
             e.printStackTrace();
             removeFromExtent();
         }
+    }
+
+    public Sztab getSztab() {return sztab;}
+
+    public void setSztab(Sztab sztab) {
+        if(sztab==null) throw new IllegalArgumentException("sztab nie może być null");
+        this.sztab = sztab;
+    }
+
+    public void removeSztab(){
+        Sztab s = this.sztab;
+        this.sztab=null;
+        s.removeCzlonek(this);
     }
 
     public String getImie() {
