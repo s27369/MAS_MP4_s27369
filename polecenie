@@ -4,7 +4,7 @@ Unique: Osoba.Pesel musi byc unique
 
 Subset: Sztab.dowodztwo jest subsetem Sztab.czlonkowie
 
-Ordered:
+Ordered: Zolnierz.hierarchia
 
 Bag: Zolnierz 1-* kontrakt *-1 brygada
 
